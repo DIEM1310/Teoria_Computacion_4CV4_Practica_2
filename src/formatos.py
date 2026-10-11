@@ -111,7 +111,7 @@ def simbolos_que_el_jff_no_conserva(automata):
     return [s for s in automata.alfabeto if s not in usados]
 
 
-def _posiciones(automata):
+def posiciones_de_dibujo(automata):
     """Coordenadas para dibujar: las del autómata si las tiene todas y, si no, los estados
     repartidos en columnas según su distancia al estado inicial (de izquierda a derecha,
     como se dibuja un diagrama en JFLAP). Los inaccesibles quedan en la última columna."""
@@ -150,7 +150,7 @@ def _posiciones(automata):
 
 def escribir_jff(automata):
     _exigir_escribible_en_xml(automata)
-    pos = _posiciones(automata)
+    pos = posiciones_de_dibujo(automata)
     ids = {q: i for i, q in enumerate(automata.estados)}
     lineas = ['<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
               "<structure>", "  <type>fa</type>", "  <automaton>"]
