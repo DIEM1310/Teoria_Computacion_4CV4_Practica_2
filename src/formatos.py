@@ -16,7 +16,6 @@ Automata.posiciones y no influyen en el alfabeto ni en la función de transició
 """
 
 import json
-import math
 import re
 from pathlib import Path
 from xml.etree import ElementTree
@@ -114,15 +113,35 @@ def simbolos_que_el_jff_no_conserva(automata):
 
 def _posiciones(automata):
     """Coordenadas para dibujar: las del autómata si las tiene todas y, si no, los estados
-    repartidos en un círculo (el inicial arriba y los demás en el orden de Q)."""
-    if automata.estados and all(q in automata.posiciones for q in automata.estados):
+    repartidos en columnas según su distancia al estado inicial (de izquierda a derecha,
+    como se dibuja un diagrama en JFLAP). Los inaccesibles quedan en la última columna."""
+    if not automata.estados:
+        return {}
+    if all(q in automata.posiciones for q in automata.estados):
         return {q: automata.posiciones[q] for q in automata.estados}
-    n = len(automata.estados)
-    radio = max(90.0, n * 110.0 / (2 * math.pi))
-    centro = radio + 80.0
-    return {q: (round(centro + radio * math.sin(2 * math.pi * i / n), 1),
-                round(centro - radio * math.cos(2 * math.pi * i / n), 1))
-            for i, q in enumerate(automata.estados)}
+    raiz = automata.inicial if automata.inicial in automata.estados else automata.estados[0]
+    sucesores = {q: [] for q in automata.estados}
+    for desde, _, hacia in automata.transiciones():
+        sucesores[desde].append(hacia)
+    nivel = {raiz: 0}
+    cola = [raiz]
+    for q in cola:
+        for r in sucesores[q]:
+            if r not in nivel:
+                nivel[r] = nivel[q] + 1
+                cola.append(r)
+    ultimo = max(nivel.values()) + 1
+    for q in automata.estados:
+        nivel.setdefault(q, ultimo)
+    columnas = {}
+    for q in automata.estados:
+        columnas.setdefault(nivel[q], []).append(q)
+    alto = max(len(c) for c in columnas.values())
+    posiciones = {}
+    for n, estados in columnas.items():
+        for j, q in enumerate(estados):
+            posiciones[q] = (80.0 + 150.0 * n, round(80.0 + 110.0 * (j + (alto - len(estados)) / 2), 1))
+    return posiciones
 
 
 # ---------------------------------------------------------------------------
