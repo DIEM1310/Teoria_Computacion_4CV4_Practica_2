@@ -226,7 +226,7 @@ def test_el_jff_no_guarda_el_alfabeto_y_se_deduce_de_las_transiciones():
     assert F.simbolos_que_el_jff_no_conserva(par_de_ceros()) == []
 
 
-def test_las_posiciones_se_conservan_y_si_faltan_se_reparten_en_un_circulo():
+def test_las_posiciones_se_conservan_y_si_faltan_se_reparten_por_capas():
     a = par_de_ceros()
     assert a.posiciones == {}
     b = F.leer_jff(F.escribir_jff(a))
