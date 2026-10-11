@@ -4,11 +4,14 @@ app.py solo arma la pantalla y llama a estas funciones y a las de automata.py, f
 y lenguajes.py; lo que se puede probar sin abrir una ventana vive aquí.
 """
 
+import random
 import re
+import zlib
 from pathlib import Path
 
 import formatos as F
 from automata import LIMITE_CAMINOS, Automata, AutomataInvalido, formatear_conjunto
+from construcciones import cadenas_hasta
 from dibujo import svg_automata
 from lenguajes import LAMBDA, parsear_alfabeto
 
@@ -257,3 +260,85 @@ def lineas_de_particiones(resultado):
     if resultado.trampa:
         lineas.append(f"(El AFD es parcial: se agregó temporalmente el estado trampa {resultado.trampa}.)")
     return lineas
+
+
+# ---------------------------------------------------------------------------
+# Cadenas de prueba y detalle de las conversiones (para documentar cada autómata)
+# ---------------------------------------------------------------------------
+
+def traza_compacta(a, recorrido):
+    """El recorrido en una línea: {q0} –0→ {q0,q1} –1→ ∅ (conjuntos de estados activos tras cada símbolo)."""
+    partes = [formatear_conjunto(a._ordenar(recorrido.pasos[0].conjunto))]
+    for p in recorrido.pasos[1:]:
+        partes.append(f"–{p.simbolo}→ {formatear_conjunto(a._ordenar(p.conjunto))}")
+    return " ".join(partes)
+
+
+def _elegir_por_longitud(grupos, cantidad, azar):
+    """Elige `cantidad` cadenas repartidas entre las longitudes disponibles, de la más corta a la más larga."""
+    longitudes = sorted(grupos)
+    if not longitudes:
+        return []
+    elegidas = []
+    if len(longitudes) >= cantidad:
+        objetivos = [longitudes[round(i * (len(longitudes) - 1) / max(1, cantidad - 1))] for i in range(cantidad)]
+    else:
+        objetivos = [longitudes[i % len(longitudes)] for i in range(cantidad)]
+    for n in objetivos:
+        candidatas = [w for w in grupos[n] if w not in elegidas]
+        if candidatas:
+            elegidas.append(azar.choice(candidatas))
+    return elegidas
+
+
+def casos_de_prueba(a, validas=5, invalidas=5, semilla=""):
+    """Cadenas válidas e inválidas de distinta longitud para probar un autómata (siempre las mismas para el
+    mismo autómata y semilla). Si el lenguaje tiene menos cadenas válidas que las pedidas, devuelve las que hay.
+    Entre las inválidas procura incluir una con la que el autómata se bloquea."""
+    azar = random.Random(zlib.crc32(f"{semilla}|{a.nombre}".encode("utf-8")))
+    limite = {1: 14, 2: 12, 3: 8}.get(len(a.alfabeto), 6)
+    aceptadas, rechazadas, bloqueadas = {}, {}, {}
+    for w in cadenas_hasta(a.alfabeto, limite):
+        if a.acepta(w):
+            aceptadas.setdefault(len(w), []).append(w)
+        else:
+            rechazadas.setdefault(len(w), []).append(w)
+            if w and not a.simular(w).pasos[-1].conjunto and len(w) >= 2:
+                bloqueadas.setdefault(len(w), []).append(w)
+    base = [w for g in aceptadas.values() for w in g]
+    for _ in range(800 if base else 0):                       # válidas más largas: se rodea una válida de símbolos al azar
+        w = azar.choice(base)
+        w = "".join(azar.choice(a.alfabeto) for _ in range(azar.randint(0, 4))) + w \
+            + "".join(azar.choice(a.alfabeto) for _ in range(azar.randint(0, 4)))
+        if limite < len(w) <= 14 and a.acepta(w) and w not in aceptadas.get(len(w), []):
+            aceptadas.setdefault(len(w), []).append(w)
+    buenas = _elegir_por_longitud(aceptadas, validas, azar)
+    malas = _elegir_por_longitud(rechazadas, invalidas, azar)
+    if bloqueadas and malas and not any(w in {x for g in bloqueadas.values() for x in g} for w in malas):
+        corta = min(bloqueadas)
+        malas[len(malas) // 2] = azar.choice(bloqueadas[corta])
+    return sorted(set(buenas), key=lambda w: (len(w), w)), sorted(set(malas), key=lambda w: (len(w), w))
+
+
+def detalle_de_subconjuntos(a, conversion):
+    """Una línea por cada (estado del AFD, símbolo): de qué unión sale su destino. Para explicar paso a paso
+    la construcción de subconjuntos."""
+    lineas = []
+    for nombre, subconjunto in conversion.subconjuntos.items():
+        miembros = a._ordenar(subconjunto)
+        for simbolo in a.alfabeto:
+            partes = [formatear_conjunto(a.destinos(q, simbolo)) for q in miembros]
+            union = a.clausura(a.mover(subconjunto, simbolo))
+            lineas.append(f"δ'({nombre}, {simbolo}) = " + " ∪ ".join(f"δ({q},{simbolo})" for q in miembros)
+                          + " = " + " ∪ ".join(partes) + f" = {formatear_conjunto(a._ordenar(union))}")
+    return lineas
+
+
+def trazas_de_subconjuntos(a, inicio, w):
+    """Los conjuntos que recorre el AFD desde el estado `inicio` (un conjunto de estados) leyendo w."""
+    actual = a.clausura(inicio)
+    camino = [formatear_conjunto(a._ordenar(actual))]
+    for simbolo in w:
+        actual = a.clausura(a.mover(actual, simbolo))
+        camino.append(formatear_conjunto(a._ordenar(actual)))
+    return camino
