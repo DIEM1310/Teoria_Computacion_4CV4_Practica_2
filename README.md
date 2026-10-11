@@ -28,7 +28,7 @@ Profundizar en los autómatas finitos no deterministas y sus conversiones median
 | Propuesta de trabajo | [docs/propuesta.md](docs/propuesta.md) |
 | Bibliografía | [docs/bibliografia.md](docs/bibliografia.md) |
 
-Los autómatas están en [automatas/](automatas/), organizados en `lista2-afd/`, `lista3-afnd/`, `lista3-afnd-lambda/`, `conversiones/` y `aplicacion/`. Cada uno se entrega en `.jff` (formato principal) y también en `.json` y `.xml`. Las capturas están en [evidencias/](evidencias/).
+Los autómatas están en [automatas/](automatas/), organizados en `lista2-afd/`, `lista3-afd/`, `lista3-afnd/`, `lista3-afnd-lambda/`, `conversiones/` y `aplicacion/`. Cada uno se entrega en `.jff` (formato principal) y también en `.json` y `.xml`. Las capturas están en [evidencias/](evidencias/).
 
 ## Código reutilizado de la Práctica 1
 
@@ -57,13 +57,18 @@ Las mismas pruebas se ejecutan en GitHub Actions con las tres versiones de Pytho
 | Carpeta o archivo | Contenido |
 |---|---|
 | `src/lenguajes.py` | Operaciones sobre cadenas y lenguajes (Práctica 1) |
-| `src/automata.py` | Núcleo del autómata: definición, simulación, λ-clausura y conversión (no depende de Flet) |
+| `src/automata.py` | Núcleo del autómata: definición, simulación, λ-clausura, conversión y minimización (no depende de Flet) |
 | `src/formatos.py` | Lectura y escritura de `.jff`, `.json` y `.xml` (no depende de Flet) |
-| `src/app.py` | Interfaz gráfica con Flet |
+| `src/construcciones.py`, `src/dibujo.py`, `src/controlador.py` | Constructores de patrones, diagrama SVG y lógica de la interfaz (no dependen de Flet) |
+| `src/ejercicios.py`, `src/expresiones.py` | Definición de los autómatas de la Lista 3 y expresiones regulares (no dependen de Flet) |
+| `src/app.py` | Interfaz gráfica con Flet (el único módulo que importa Flet) |
 | `tests/` | Pruebas con pytest |
 | `automatas/` | Autómatas de los ejercicios, en los tres formatos |
+| `herramientas/` | Scripts que generan y verifican los autómatas y miden costos (`generar_lista2.py`, `generar_lista3.py`, `verificar_entregas.py`, `medir_costos.py`) |
 | `docs/` | Documentos de cada ejercicio, en Markdown |
 | `evidencias/` | Capturas de git, de la integración continua, de JFLAP y de la aplicación |
+
+Para comprobar un `.jff` dibujado en JFLAP contra su definición y generar su `.json` y su `.xml`: `python herramientas/verificar_entregas.py --formatos`.
 
 ## Formatos de archivo y convención para λ
 
