@@ -110,18 +110,19 @@ Reproducible con `python herramientas/medir_costos.py`. Seguir todos los caminos
 
 ## 3.5. Pruebas
 
-La suite tiene **749 pruebas** (`pytest -q`), que se ejecutan en los tres contenedores y en la integración continua.
+La suite tiene **813 pruebas** (`pytest -q`), que se ejecutan en los tres contenedores y en la integración continua.
 
 | Archivo | Pruebas | Qué cubre |
 |---|---|---|
 | `tests/test_lenguajes.py` | 63 | Operaciones de la Práctica 1 |
 | `tests/test_automata.py` | 84 | Núcleo: aceptación, λ-clausura, δ̂, caminos, conversiones, minimización, cota 2ⁿ |
-| `tests/test_formatos.py` | 207 | Los tres formatos y su lectura incorrecta |
+| `tests/test_formatos.py` | 208 | Los tres formatos y su lectura incorrecta |
 | `tests/test_controlador.py` | 42 | Lógica de la interfaz y el dibujo |
 | `tests/test_app.py` | 41 | Los manejadores de la pantalla, con una página simulada |
 | `tests/test_lista2.py` | 69 | Cada autómata de la Lista 2 contra la definición exacta de su lenguaje |
 | `tests/test_lista3.py` | 155 | Los autómatas de la Lista 3 y el verificador |
 | `tests/test_expresiones.py` | 88 | Expresiones regulares |
+| `tests/test_aplicacion.py` | 63 | El autómata del fantasma de Pac-Man (Ejercicio 5): casos de prueba, los tres formatos y la ampliación |
 
 Las pruebas que el enunciado pide como mínimo:
 

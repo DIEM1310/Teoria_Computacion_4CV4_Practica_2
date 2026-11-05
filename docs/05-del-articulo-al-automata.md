@@ -82,6 +82,14 @@ Las dos ampliaciones son **decisiones de diseño propias**: el texto de Gribkoff
 - El simulador lo lee como **AFD completo de 6 estados y 8 símbolos**; en la interfaz se carga con *Abrir* y se prueba cada cadena con *Simular*.
 - Las pruebas automáticas están en `tests/test_aplicacion.py`: comprueban los 14 casos de abajo, que los tres formatos den lo mismo, que el autómata sea completo, que tenga las flechas de la Figura 3 y que desde cualquier estado se pueda volver a Vagar.
 
+![El autómata de Pac-Man en JFLAP, con Multiple Run](../evidencias/jflap/pacman_multiple_run.png)
+
+*Figura 1. `Pacman_fantasma.jff` abierto en JFLAP, con *Input → Multiple Run*: `vpv` y `cmbrv` se aceptan y `cmv` se rechaza, como en los casos 4, 10 y 11 de la tabla siguiente.*
+
+![El autómata de Pac-Man en el simulador, con la cadena cmbrv](../evidencias/app/08_pacman_cmbrv.png)
+
+*Figura 2. El mismo archivo cargado en el simulador de este trabajo: AFD completo de 6 estados y 48 transiciones. La cadena `cmbrv` se acepta y la traza recorre q0 → q2 → q3 → q5 → q0 → q1 (caso 10 de la tabla siguiente).*
+
 ### Cadenas de prueba
 
 El resultado **esperado** se razonó a mano con la figura y la ampliación, antes de usar el simulador; el **obtenido** es el del simulador al leer el `.jff`.
