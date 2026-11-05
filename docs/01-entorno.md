@@ -67,6 +67,7 @@ git branch -d feature/<nombre>
 | #9 | `feature/interfaz-flet` | `src/app.py`: el simulador con interfaz gráfica |
 | #10 | `feature/automatas-lista3` | Los autómatas de la Lista 3, las expresiones regulares y el verificador |
 | #11 | `feature/documentos` | Documentos de los ejercicios 1 a 3 y evidencias de la aplicación |
+| #12 | `feature/ejercicios-4-5` | Ejercicio 5 (fantasma de Pac-Man como AFD) y fichas del Ejercicio 4 |
 
 Son más de los cuatro Pull Request fusionados que pide el enunciado.
 
