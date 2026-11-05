@@ -1,7 +1,5 @@
 # Ejercicio 3. Simulador de autómatas con interfaz gráfica
 
-> **Borrador.** Lo que se afirma aquí se comprobó contra el código y las pruebas. Los recuadros **«Tu parte»** marcan lo que debes revisar o redactar con tus palabras. Borra estas indicaciones antes de entregar.
-
 Aplicación en Python con [Flet](https://flet.dev) 0.86.5 (`src/app.py`) que define, importa, simula, convierte y exporta autómatas finitos (AFD, AFND y AFND-λ). Se ejecuta con `docker compose up py312` y se abre en <http://localhost:8550> (véase [01-entorno.md](01-entorno.md)).
 
 ## 3.0. Arquitectura: el núcleo no depende de Flet
@@ -92,8 +90,6 @@ La aplicación limita la conversión a 5 000 estados (`LIMITE_ESTADOS_AFD`) y la
 
 Reproducible con `python herramientas/medir_costos.py`. Seguir todos los caminos cuesta entre 1,7 y 3,2 veces más que recorrer el AFD ya construido, pero el AFD de n = 12 tiene 315 veces más estados que el AFN y tarda 0,5 s en construirse: solo compensa si se van a probar muchísimas cadenas con el mismo autómata y el AFD es pequeño. En los AFN de los ejercicios de la Lista 3 hay, en las cadenas de prueba, entre 1 y 4 estados activos en promedio, es decir, el costo de seguir todos los caminos es muy cercano al de un AFD.
 
-> **Tu parte:** revisa si esta justificación te convence y reescríbela con tus palabras; es lo que el enunciado pide documentar. Si prefieres la otra opción, dímelo antes de entregar y se cambia.
-
 ## 3.4. Exportación y operaciones sobre lenguajes
 
 - **Exportación**: *Guardar .jff*, *.json*, *.xml* o *los tres*, en la carpeta `salidas/` del proyecto, con el nombre que se escriba (se limpia para que no pueda salir de esa carpeta). También el **diagrama como `.svg`**.
@@ -137,12 +133,10 @@ Las pruebas que el enunciado pide como mínimo:
 
 Para comprobar los cinco componentes de la quíntupla hay `test_se_interpretan_los_cinco_componentes_de_la_quintupla`, que lee los tres archivos del Anexo 3 del enunciado y comprueba que dan el mismo autómata.
 
-> **Tu parte:** las pruebas deben aprobarse en los tres contenedores y en la integración continua; las capturas están en [01-entorno.md](01-entorno.md#15-evidencias). Si alguna versión falla, corrígelo antes de entregar.
-
 ## Referencias
 
 Appveyor Systems Inc. (2026). *flet* (Versión 0.86.5) [Paquete de Python]. Python Package Index. Recuperado el 5 de octubre de 2026, de https://pypi.org/project/flet/0.86.5/
 
-Hopcroft, J. E., Motwani, R. y Ullman, J. D. (2007). *Teoría de autómatas, lenguajes y computación* (3.ª ed.). Pearson Educación. ISBN: *(cópialo de la página legal de tu ejemplar)*.
+Hopcroft, J. E., Motwani, R. y Ullman, J. D. (2007). *Teoría de autómatas, lenguajes y computación* (3.ª ed.). Pearson Educación. ISBN: 978-84-7829-088-8.
 
 Rodger, S. H. y Finley, T. W. (2006). *JFLAP: An interactive formal languages and automata package*. Jones & Bartlett.

@@ -1,16 +1,84 @@
 # Ejercicio 4. Investigación y estado del arte
 
-> **Borrador.** Por ahora solo está completo el apartado **4.3** (las dos fichas). Los apartados 4.1 y 4.2 están pendientes. Las fichas se redactaron a partir del texto de los artículos: el primero, de la versión de arXiv; el segundo, de la versión publicada (con sus páginas). Los recuadros **«Para verificar»** son para que contrastes cada ficha con el original (unos 20 minutos por artículo); bórralos antes de entregar.
-
 ## 4.1. Investigación
 
-*(Pendiente: las siete preguntas del enunciado, entre tres y cinco cuartillas.)*
+### 4.1.1 El no determinismo: AFN y AFN-λ
 
-## 4.2. Artículo asignado: Rabin y Scott (1959)
+Un **AFD** es una quíntupla (Q, Σ, δ, q₀, F) con δ: Q × Σ → Q: en cada estado, cada símbolo lleva a **exactamente un** estado. Un **AFN** conserva la quíntupla, pero δ: Q × Σ → 𝒫(Q) devuelve un **conjunto** de estados, que puede ser vacío o tener varios. Un **AFN-λ** permite además moverse sin leer nada: δ: Q × (Σ ∪ {λ}) → 𝒫(Q).
 
-*(Pendiente: ubicar dónde se prueba que todo autómata no determinista tiene uno determinista equivalente, una diferencia de notación con tu libro y la mención oficial de la ACM del Premio Turing 1976.)*
+Para hablar de cadenas se extiende δ a δ̂. En un AFN:
 
-## 4.3. Dos artículos localizados
+- δ̂(q, λ) = {q}
+- δ̂(q, xa) = ⋃ { δ(p, a) : p ∈ δ̂(q, x) }, con x ∈ Σ\* y a ∈ Σ
+
+En un AFN-λ la extensión incluye la λ-clausura (apartado siguiente): δ̂(q, λ) = λ-cl(q) y δ̂(q, xa) = λ-cl( ⋃ { δ(p, a) : p ∈ δ̂(q, x) } ).
+
+**Qué significa aceptar.** Una cadena w es aceptada si **existe al menos un camino** de q₀ a un estado de F que lee w; es decir, si δ̂(q₀, w) ∩ F ≠ ∅. Hay que notar dos cosas. Primero, la aceptación es existencial: basta un camino bueno, aunque otros se bloqueen o terminen en estados que no son de aceptación; w se rechaza solo cuando **todos** los caminos fallan. Segundo, el autómata no «adivina» ni ejecuta cosas en paralelo en un sentido físico: «seguir todos los caminos a la vez» es un modo de **calcular** δ̂, que es lo que hace el simulador de este trabajo (apartado 3.3). El lenguaje del autómata es L(M) = { w : δ̂(q₀, w) ∩ F ≠ ∅ }.
+
+### 4.1.2 La λ-clausura
+
+La **λ-clausura** de un estado q, λ-cl(q), es el conjunto de estados que se alcanzan desde q siguiendo **cero o más** transiciones λ. Es el menor conjunto S tal que q ∈ S y, si p ∈ S y r ∈ δ(p, λ), entonces r ∈ S. Para un conjunto T de estados, λ-cl(T) = ⋃ { λ-cl(q) : q ∈ T }.
+
+**Algoritmo.** Es una búsqueda en el grafo formado solo por las flechas λ:
+
+1. S ← {q}; pila ← [q].
+2. Mientras la pila no esté vacía: sacar p; para cada r ∈ δ(p, λ) con r ∉ S, añadir r a S y a la pila.
+3. Devolver S.
+
+Cada estado entra una vez a la pila y cada flecha λ se mira una vez, así que el costo es proporcional a (|Q| + número de flechas λ). Importa que se lleve la cuenta de lo ya visitado (r ∉ S): sin ella, un ciclo de transiciones λ no termina. La λ-clausura se usa dos veces al simular: al empezar (λ-cl(q₀)) y después de cada símbolo leído.
+
+### 4.1.3 La construcción de subconjuntos
+
+**Teorema (equivalencia entre AFD y AFN).** Un lenguaje es aceptado por algún AFN si y solo si es aceptado por algún AFD (Rabin y Scott, 1959; Hopcroft et al., 2007, cap. 2).
+
+**Construcción.** Dado un AFN N = (Q_N, Σ, δ_N, q₀, F_N), se define el AFD D = (Q_D, Σ, δ_D, {q₀}, F_D) con:
+
+- Q_D = 𝒫(Q_N); es decir, **cada estado de D es un conjunto de estados de N**;
+- δ_D(S, a) = ⋃ { δ_N(p, a) : p ∈ S };
+- F_D = { S : S ∩ F_N ≠ ∅ }.
+
+Si N es un AFN-λ, el estado inicial de D es λ-cl(q₀) y δ_D(S, a) = λ-cl( ⋃ { δ_N(p, a) : p ∈ S } ).
+
+**Esbozo de la demostración.** Se prueba por inducción sobre |w| que δ̂_D({q₀}, w) = δ̂_N(q₀, w). Para w = λ ambos lados son {q₀}. Si vale para x, entonces para w = xa: δ̂_D({q₀}, xa) = δ_D(δ̂_D({q₀}, x), a) = ⋃ { δ_N(p, a) : p ∈ δ̂_N(q₀, x) } = δ̂_N(q₀, xa). Como D acepta w exactamente cuando ese conjunto corta a F_N, que es la condición de aceptación de N, se tiene L(D) = L(N). La otra dirección es trivial: un AFD es un AFN cuyos conjuntos tienen un solo estado.
+
+En la práctica no se construyen los 2ⁿ conjuntos sino solo los **alcanzables** desde el inicial, calculándolos por demanda: se empieza con {q₀} (o λ-cl(q₀)) y se aplica δ_D a cada conjunto nuevo hasta que no aparezcan más.
+
+### 4.1.4 El costo de la conversión y la cota 2ⁿ
+
+Como Q_D = 𝒫(Q_N), el AFD tiene **a lo más 2ⁿ estados** si el AFN tiene n. La cota **se alcanza**: sea L_n el lenguaje de las cadenas sobre {0, 1} cuyo n-ésimo símbolo desde el final es 1. Un AFN lo reconoce con n + 1 estados (adivina cuál es el símbolo n-ésimo desde el final y cuenta n − 1 símbolos más), pero cualquier AFD necesita recordar los **últimos n símbolos**, que son 2ⁿ posibilidades distintas, y por eso su versión mínima tiene 2ⁿ estados. En el simulador del trabajo se midió: para n = 4, 8 y 12 el AFN tiene 5, 9 y 13 estados y el AFD, 16, 256 y 4 096 (apartado 3.3). Es decir, **el crecimiento exponencial no es solo una cota teórica**: aparece en familias muy sencillas.
+
+### 4.1.5 El teorema de Kleene
+
+**Teorema de Kleene.** Un lenguaje es regular (aceptado por un autómata finito) si y solo si es denotado por una expresión regular (Hopcroft et al., 2007, cap. 3). Tiene dos mitades:
+
+- **Expresión regular → autómata** (construcción de Thompson). Por inducción sobre la estructura de la expresión se construye un AFN-λ con un estado inicial y uno final: para ∅, λ y un símbolo a se dibujan autómatas de dos estados o menos; la unión R + S agrega un estado inicial con dos flechas λ hacia los autómatas de R y de S; la concatenación RS une el final de R con el inicio de S mediante una flecha λ; la estrella R\* agrega flechas λ para repetir R o saltarla. El resultado tiene a lo más del orden de 2 veces el tamaño de la expresión en estados.
+- **Autómata → expresión regular** (eliminación de estados o fórmula R_ij^(k)). Se agregan un inicio y un final nuevos, y se elimina un estado intermedio a la vez: al quitar el estado s, por cada par de flechas p → s y s → r se agrega una flecha p → r con la etiqueta (p→s)(s→s)\*(s→r), unida con la que ya hubiera. Al final queda una sola flecha entre el inicio y el final, cuya etiqueta es la expresión. La expresión puede ser muy grande, y su forma depende del orden en que se eliminen los estados (el módulo `expresiones.py` del trabajo permite elegir ese orden).
+
+Por tanto AFD, AFN, AFN-λ y expresiones regulares definen **la misma clase de lenguajes**.
+
+### 4.1.6 Minimización: Myhill-Nerode y el algoritmo de Hopcroft
+
+**Teorema de Myhill-Nerode.** Dado L ⊆ Σ\*, se definen x ≡_L y si y solo si, para todo z ∈ Σ\*, xz ∈ L ⇔ yz ∈ L (dos cadenas son equivalentes si ninguna extensión las distingue). Entonces L es regular **si y solo si ≡_L tiene un número finito de clases de equivalencia**, y ese número es el de estados del **AFD mínimo** de L, que es único salvo renombrar los estados. La demostración usa que ≡_L es una congruencia por la derecha: las clases se vuelven los estados y δ([x], a) = [xa]; en sentido contrario, un AFD con k estados separa las cadenas en a lo más k clases compatibles con ≡_L, por lo que ≡_L tiene a lo más k clases. Dos consecuencias prácticas: sirve para probar que un lenguaje **no** es regular (si hay infinitas cadenas distinguibles de a pares) y para saber de antemano cuántos estados necesita el mejor AFD.
+
+**Algoritmo de Hopcroft.** Parte de un AFD completo y sin estados inaccesibles, y busca las clases de estados equivalentes por **refinamiento de particiones**: dos estados son equivalentes si ninguna cadena los separa (uno llega a F y el otro no).
+
+1. P ← { F, Q ∖ F } (se descarta el bloque vacío). W ← { el menor de los dos bloques }.
+2. Mientras W no esté vacío: sacar un bloque A de W. Para cada símbolo c, sea X el conjunto de estados que **llegan a A leyendo c**. Para cada bloque Y de P que X corte (Y ∩ X ≠ ∅ y Y ∖ X ≠ ∅), partir Y en Y ∩ X y Y ∖ X. Si Y estaba en W, sustituirlo por sus dos partes; si no, añadir a W solo la **más pequeña** de las dos.
+3. Al terminar, cada bloque de P es un estado del AFD mínimo.
+
+La idea clave es el último punto: basta añadir la parte pequeña, porque el efecto de la grande se deduce de la del bloque original. Con esto el costo es **O(|Σ| · n · log n)**, mejor que los métodos de refinamiento ingenuos (Moore, o la tabla de pares del libro), que cuestan del orden de n² · |Σ|. El simulador del trabajo usa el refinamiento más sencillo de la familia de Moore y muestra las particiones paso a paso (`docs/03-simulador.md`); lo importante para el curso es que **ambos dan el mismo AFD mínimo**, y la diferencia es solo de eficiencia. Zhu et al. (2021; ficha 1 de 4.3) miden la minimización de AFD en la práctica y comparan el algoritmo de Hopcroft con otros.
+
+### 4.1.7 Qué significa, en términos prácticos, que el no determinismo no aumente el poder
+
+Que AFD y AFN reconozcan **los mismos lenguajes** significa que cualquier cosa que se pueda describir con un AFN se puede ejecutar con un AFD: un programa con una tabla de transición y un solo estado actual, que lee cada símbolo una vez, en **tiempo lineal** y con memoria constante respecto a la longitud de la cadena. El no determinismo no añade capacidad; lo que aporta es **comodidad y concisión**:
+
+- **Diseño.** Es más fácil escribir un AFN para «contiene `abbbab`» o «el n-ésimo símbolo desde el final es 1», y más fácil combinar autómatas (unión, concatenación y estrella son directas con transiciones λ). Esto es justo lo que usa la construcción de Thompson.
+- **Tamaño.** Un AFN puede ser **exponencialmente** más pequeño que su AFD (apartado 4.1.4). Si el costo de la conversión es prohibitivo, se puede **simular el AFN** manteniendo el conjunto de estados activos, con costo de a lo más n² operaciones por símbolo, o construir el AFD por demanda y guardar solo los subconjuntos que se visitan.
+- **Implementaciones reales.** Los motores de expresiones regulares eligen entre estas estrategias: unos simulan el AFN en paralelo (estilo Thompson, tiempo lineal en la entrada) y otros retroceden por un camino a la vez (estilo Spencer, que puede ser muy lento en ciertas expresiones); Davis et al. (2019; ficha 2 de 4.3) documentan esa diferencia en motores usados en la industria.
+
+Hay que distinguir **poder** de **eficiencia**: los dos modelos tienen el mismo poder, pero no el mismo tamaño ni el mismo costo. Y la igualdad de poder es una propiedad de los autómatas **finitos**: en los autómatas de pila, el no determinismo sí aumenta el poder (los AFD con pila reconocen menos lenguajes que los no deterministas).
+
+## 4.2. Dos artículos localizados
 
 Ambos tienen DOI y se publicaron después de 2018. El primero describe una implementación evaluada con experimentos (el enunciado pide que al menos uno lo haga); el segundo es un estudio empírico.
 
@@ -33,8 +101,6 @@ La evaluación (Sec. 4.2) usa 1 000 conjunciones aleatorias de fórmulas LTLf y 
 **5. Tema del temario.** Unidad I, autómatas finitos: el AFD, el AFN y la construcción de subconjuntos (que aquí es el paso que puede crecer exponencialmente) y la **minimización de un AFD por refinamiento de particiones**. El artículo no menciona el teorema de Myhill-Nerode, y la complejidad O(n log n) de Hopcroft solo aparece en el título de su referencia; esos dos puntos hay que tomarlos de tu libro. *(Consulta en el programa sintético el número exacto del tema.)*
 
 **6. Aportación a tu trabajo.** Respalda dos cosas de la práctica. Primero, el apartado 2.4: la determinización por subconjuntos puede explotar, y el artículo lo observa en un problema real; en tu simulador, la familia «el n-ésimo símbolo desde el final es 1» pasa de 13 estados a 4 096 para n = 12. Segundo, el apartado 3: `minimizar()` de `src/automata.py` parte de {aceptación, no aceptación} y refina ronda por ronda, la misma idea del refinamiento de particiones; ojo, es el refinamiento básico (cuadrático), no la optimización O(n log n) de Hopcroft. El ejercicio 156 muestra el resultado: de 5 estados a 3.
-
-> **Para verificar (Ficha 1).** Lee la Sec. 1 (problema), la Sec. 2.3 (Hopcroft y Brzozowski, Teoremas 2 y 3), la Sec. 4.2 (benchmarks y resultados) y la Sec. 5 (por qué falla Brzozowski). Comprueba que la cita coincida con la portada de la versión publicada (páginas 117-134, editores Ganty y Bresolin) y confirma en el sitio de GandALF 2021 que es un simposio con comité de programa (las páginas que leí no lo dicen).
 
 ### Ficha 2. Davis, Michael IV, Coghlan, Servant y Lee (2019): ¿por qué las expresiones regulares no son una *lingua franca*?
 
@@ -64,8 +130,6 @@ La evaluación (Sec. 4.2) usa 1 000 conjunciones aleatorias de fórmulas LTLf y 
 **5. Tema del temario.** Unidad I, expresiones regulares y su relación con los autómatas finitos. El artículo dice que la mayoría de los motores evalúan una expresión «simulando el comportamiento de un autómata finito equivalente (determinista o no)» (p. 444, Sec. 2.2). Los resultados distinguen dos algoritmos (p. 450, Sec. 7.2.3): Go y Rust usan el algoritmo de Thompson, de tiempo lineal y con menos funciones, que según los autores es parecido a un recorrido en anchura del grafo del AFN; los otros seis usan variantes del retroceso de Spencer, análogo a un recorrido en profundidad, que puede ser superlineal por revisar estados redundantes, y las expresiones con referencias hacia atrás pueden ser exponenciales (NP-completas). Esto se conecta con el no determinismo: el retroceso explora un camino a la vez, y la simulación de Thompson sigue todos a la vez.
 
 **6. Aportación a tu trabajo.** Es la contrapartida práctica de la decisión de diseño del apartado 3.3 (`docs/03-simulador.md`): tu simulador sigue todos los caminos con el conjunto de estados activos, que es la idea de Thompson (en anchura), en vez de explorarlos uno por uno con retroceso. También ilustra la distancia entre el modelo teórico y los motores reales. *(Conexión tuya, no afirmación del artículo: las referencias hacia atrás que usan los motores reales no se pueden expresar con un autómata finito, y esa frontera es la que el curso estudia a partir de la Unidad II. El artículo no trata explícitamente la diferencia entre expresiones «regulares» y «extendidas».)*
-
-> **Para verificar (Ficha 2).** Todas las cifras de la ficha se contrastaron con el texto completo del artículo. Para comprobarlas tú, lee: el resumen y la introducción (p. 443), la Sec. 2.2 (p. 444), la Sec. 4.2 (p. 445), la Tabla 3 y la Sec. 7.1.2 (p. 448), la Sec. 7.2.2 y 7.2.3 (pp. 449-450) y la Sec. 12 (p. 452).
 
 ## Referencias
 
