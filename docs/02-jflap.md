@@ -112,6 +112,44 @@ Al cargar con el lector nuevo los `.jff` de la Práctica 1 y probarlos con una l
 | 121 | Tenía como final el estado trampa `q5` en lugar de `q0`. |
 | 133 | Faltaba la transición δ(q2, b) = q3 que da el enunciado. |
 
+### Simulación paso a paso en JFLAP
+
+Los autómatas se abrieron en JFLAP y se probaron con *Input → Step…*. JFLAP muestra una configuración por cada rama que sigue la cadena: en verde las que terminan en un estado de aceptación y en rojo las que se rechazan.
+
+**AFD: ejercicio 97 (longitud múltiplo de 3).**
+
+![JFLAP: el AFD del 97 acepta 012](../evidencias/jflap/afd_097_valida.png)
+
+*Figura 1. La cadena `012` recorre q0, q1, q2 y vuelve a q0, que es de aceptación: se acepta.*
+
+![JFLAP: el AFD del 97 rechaza 01](../evidencias/jflap/afd_097_invalida.png)
+
+*Figura 2. La cadena `01` termina en q2, que no es de aceptación: se rechaza.*
+
+**AFND: ejercicio 99 (termina en `001001`).**
+
+![JFLAP: el AFND del 99 acepta 0001001](../evidencias/jflap/afnd_099_valida.png)
+
+*Figura 3. Con `0001001` el autómata sigue varios caminos a la vez (el lazo de q0 y las ramas que avanzan por el sufijo). La rama que llega a q6 acepta la cadena.*
+
+![JFLAP: el AFND del 99 rechaza 00100](../evidencias/jflap/afnd_099_invalida.png)
+
+*Figura 4. Con `00100` todas las ramas quedan en rojo (q2, q0, q5 y q1): ninguna llega a q6 y la cadena se rechaza.*
+
+**AFND-λ: ejercicio 196.**
+
+![JFLAP: configuraciones iniciales del 196 con 01](../evidencias/jflap/afnd_lambda_196_clausura.png)
+
+*Figura 5. Paso inicial con `01`: JFLAP crea dos configuraciones, en A y en B, porque la λ-clausura de A es {A, B}.*
+
+![JFLAP: el AFND-λ del 196 acepta 01](../evidencias/jflap/afnd_lambda_196_valida.png)
+
+*Figura 6. Al terminar `01` hay configuraciones en C, que es de aceptación: se acepta.*
+
+![JFLAP: el AFND-λ del 196 rechaza 10](../evidencias/jflap/afnd_lambda_196_invalida.png)
+
+*Figura 7. Con `10` la única rama llega a C leyendo el 1, pero C no tiene transición con 0: se rechaza.*
+
 ## 2.3. Transiciones λ
 
 Los cinco AFND-λ del enunciado (196 a 200) tienen las transiciones λ que se muestran; su ubicación viene dada en cada tabla.
@@ -160,6 +198,10 @@ La λ-clausura de un estado `q`, Cl(q), es el conjunto de estados alcanzables de
 ### Procedimiento
 
 En JFLAP, un AFND estándar se convierte con *Convert → Convert to DFA* (se puede ver paso a paso con *Complete*). Un AFND-λ se convierte **primero a un AFND estándar** (se quitan las transiciones λ) **y después a un AFD**. Los AFD resultantes están en `automatas/conversiones/`; JFLAP nombra los estados del AFD con los conjuntos y no agrega el estado ∅, por lo que su resultado puede quedar incompleto. La construcción de subconjuntos, paso a paso, de cada ejercicio está en [guia-jflap/03-afn-a-afd.md](guia-jflap/03-afn-a-afd.md) y [04-afnd-lambda.md](guia-jflap/04-afnd-lambda.md).
+
+![AFD que produce JFLAP para el ejercicio 189](../evidencias/jflap/conversion_189.png)
+
+*Figura 8. AFD que produce JFLAP con *Convert → Convert to DFA* para el ejercicio 189 (contiene 00101 o 00110): 24 estados, cada uno etiquetado con el subconjunto de estados del AFN que representa. El inicial es {q0} y son de aceptación los subconjuntos que contienen q5 o q7. Coincide con los 24 estados de la tabla siguiente.*
 
 ### Tabla de conversiones
 

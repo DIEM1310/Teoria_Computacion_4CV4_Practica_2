@@ -40,8 +40,13 @@ CASOS = [
 
 @pytest.fixture(scope="module")
 def automata():
-    G.main()
     return F.leer_archivo(CARPETA / f"{G.NOMBRE}.jff")
+
+
+@pytest.mark.parametrize("extension", FORMATOS)
+def test_los_archivos_entregados_son_los_que_genera_el_generador(extension):
+    """Los archivos de automatas/aplicacion/ coinciden con lo que construye generar_aplicacion.py."""
+    assert F.leer_archivo(CARPETA / f"{G.NOMBRE}{extension}") == G.construir()
 
 
 def estado_final(a, w):

@@ -68,6 +68,8 @@ git branch -d feature/<nombre>
 | #10 | `feature/automatas-lista3` | Los autómatas de la Lista 3, las expresiones regulares y el verificador |
 | #11 | `feature/documentos` | Documentos de los ejercicios 1 a 3 y evidencias de la aplicación |
 | #12 | `feature/ejercicios-4-5` | Ejercicio 5 (fantasma de Pac-Man como AFD) y fichas del Ejercicio 4 |
+| #13 | `feature/ajustes-documentos` | Limpieza de los documentos y referencias completas |
+| #14 | `feature/investigacion-4-2` | Apartado 4.2 del Ejercicio 4 (Rabin y Scott) |
 
 Son más de los cuatro Pull Request fusionados que pide el enunciado.
 
@@ -92,6 +94,28 @@ El enunciado pide cuatro evidencias; se guardan en `evidencias/` y se enlazan de
 | Historial con las fusiones | `evidencias/git/git_log_graph.png` | Captura de `git log --oneline --graph --all` en la raíz del repositorio |
 | Pull Requests cerrados | `evidencias/git/pull_requests_cerrados.png` | Captura de la pestaña *Pull requests* con el filtro *Closed* |
 | Pruebas en GitHub Actions con las tres versiones aprobadas | `evidencias/ci/actions_tres_versiones.png` | Captura de la ejecución en la pestaña *Actions* (o junto a un Pull Request) donde se vean `3.11`, `3.12` y `3.13` en verde |
+
+### Historial de fusiones
+
+![Historial de Git con las fusiones](../evidencias/git/git_log_graph.png)
+
+*Figura 1. `git log --oneline --graph --all` en `main`: una rama por funcionalidad, cada una fusionada con su Pull Request (del #2 al #14 en la captura).*
+
+### Pull Requests cerrados
+
+![Lista de Pull Requests cerrados](../evidencias/git/pull_requests_cerrados.png)
+
+*Figura 2. Pull Requests cerrados del repositorio: del #1 al #14, todos fusionados; del #4 en adelante cada uno muestra las seis comprobaciones de integración continua en verde (tres por el evento `push` y tres por el `pull_request`).*
+
+### Integración continua
+
+![Ejecución de las pruebas en GitHub Actions con las tres versiones](../evidencias/ci/actions_tres_versiones.png)
+
+*Figura 3. Ejecución #34 del flujo `pruebas` sobre `main` (confirmación `ae17c1f`, fusión del PR #14): `pytest (3.11)`, `pytest (3.12)` y `pytest (3.13)` aprobados.*
+
+### Pruebas en los tres contenedores
+
+La salida completa de `pytest -q` en cada contenedor está guardada en [pytest_py311.txt](../evidencias/ci/pytest_py311.txt), [pytest_py312.txt](../evidencias/ci/pytest_py312.txt) y [pytest_py313.txt](../evidencias/ci/pytest_py313.txt). Las tres terminan en `810 passed`.
 
 ## Referencias
 
