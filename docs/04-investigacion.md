@@ -78,7 +78,44 @@ Que AFD y AFN reconozcan **los mismos lenguajes** significa que cualquier cosa q
 
 Hay que distinguir **poder** de **eficiencia**: los dos modelos tienen el mismo poder, pero no el mismo tamaño ni el mismo costo. Y la igualdad de poder es una propiedad de los autómatas **finitos**: en los autómatas de pila, el no determinismo sí aumenta el poder (los AFD con pila reconocen menos lenguajes que los no deterministas).
 
-## 4.2. Dos artículos localizados
+## 4.2. Artículo asignado: Rabin y Scott (1959)
+
+Rabin y Scott (1959) estudian los autómatas finitos y sus problemas de decisión (si un autómata acepta alguna cinta, si acepta infinitas y si dos autómatas aceptan lo mismo). En su sección 5 introducen el no determinismo y prueban que no aumenta el poder de los autómatas finitos, que es lo que se hace en el Ejercicio 2.
+
+### Dónde se prueba que todo AFN tiene un AFD equivalente
+
+La prueba está en la **sección 5, «Nondeterministic operation»** (pp. 120-121), y se compone de cuatro piezas:
+
+- **Definición 9** (p. 120): un autómata no determinista es un sistema 𝔄 = (S, M, S₀, F), donde M asigna a cada par (estado, símbolo) un **subconjunto** de S, y tanto S₀ como F son subconjuntos de S.
+- **Definición 10** (pp. 120-121): una cinta x = σ₀σ₁…σₙ₋₁ se acepta si existe una sucesión de estados s₀, s₁, …, sₙ con s₀ ∈ S₀, sᵢ ∈ M(sᵢ₋₁, σᵢ₋₁) y sₙ ∈ F. Es la aceptación existencial: basta un camino ganador.
+- **Definición 11** (p. 121): el autómata 𝔇(𝔄) = (T, N, t₀, G), donde T es el conjunto de **todos los subconjuntos** de S, N(t, σ) es la unión de los M(s, σ) para s en t, t₀ = S₀ y G es el conjunto de subconjuntos que contienen al menos un estado de F. Es un autómata ordinario (determinista).
+- **Teorema 11** (p. 121): T(𝔄) = T(𝔇(𝔄)). Su demostración se hace en dos sentidos. Si x ∈ T(𝔄), se prueba por inducción sobre k que el estado sₖ del camino ganador pertenece a N(t₀, σ₀…σₖ₋₁); en particular sₙ ∈ N(t₀, x) y, como sₙ ∈ F, ese conjunto está en G. Recíprocamente, si x ∈ T(𝔇(𝔄)), el conjunto final tₙ está en G, así que contiene un estado sₙ de F; como sₙ está en N(tₙ₋₁, σₙ₋₁), hay un sₙ₋₁ en tₙ₋₁ con sₙ ∈ M(sₙ₋₁, σₙ₋₁); se repite hacia atrás hasta llegar a s₀ ∈ t₀ = S₀, y se obtiene un camino ganador de 𝔄.
+
+Antes de la definición 9, los autores explican por qué la introducen: la principal ventaja de estas máquinas es el **pequeño número de estados** que requieren en muchos casos y la facilidad para describir máquinas concretas (p. 120). Después del teorema señalan una consecuencia (p. 121): un autómata con varios estados iniciales puede sustituirse por otro equivalente con uno solo.
+
+**La construcción con la notación del curso.** Sea N = (Q, Σ, δ, q₀, F) un AFN. El AFD equivalente es D = (Q_D, Σ, δ_D, {q₀}, F_D), con Q_D = 𝒫(Q), δ_D(S, a) = ⋃ {δ(p, a) : p ∈ S} y F_D = {S : S ∩ F ≠ ∅}. Es la construcción de subconjuntos del apartado 4.1.3, y la que implementa el simulador de este trabajo: cada estado de D es un conjunto de estados de N. La inducción de Rabin y Scott demuestra, con otra notación, que δ̂_D({q₀}, w) contiene exactamente los estados que alcanza algún camino de N que lee w.
+
+### Diferencias de notación con el libro de texto
+
+| Concepto | Rabin y Scott (1959) | Curso (Hopcroft et al., 2007) |
+|---|---|---|
+| Autómata | 𝔄 = (S, M, s₀, F); el alfabeto Σ se declara aparte («sobre el alfabeto Σ») | A = (Q, Σ, δ, q₀, F); el alfabeto forma parte de la quíntupla |
+| Estados y transición | S y M | Q y δ |
+| Estado inicial del AFN | un **conjunto** S₀ ⊆ S | un **único** estado q₀ |
+| Cadena y cadena vacía | «cinta» (tape), x = σ₀σ₁…σₙ₋₁; la vacía es Λ | cadena o palabra, w = a₁…aₙ; la vacía es ε (λ en este trabajo) |
+| Extensión a cadenas | M(s, x), con M(s, Λ) = s y M(s, xσ) = M(M(s, x), σ) | δ̂(q, w), con δ̂(q, ε) = q y δ̂(q, xa) = δ(δ̂(q, x), a) |
+| Lenguaje | T(𝔄), el conjunto de cintas aceptadas | L(A) |
+| Estado inicial del AFD construido | t₀ = S₀ | {q₀} |
+
+Me resulta más clara la notación del curso. Primero, la quíntupla (Q, Σ, δ, q₀, F) incluye el alfabeto, de modo que todo lo que hace falta para ejecutar el autómata está en la definición. Segundo, los nombres recuerdan lo que representan: δ para la transición, δ̂ para su extensión, L(A) para el lenguaje, q₀ para el estado en el que se empieza. Tercero, un único estado inicial hace que el inicial del AFD sea simplemente {q₀}. La notación de Rabin y Scott tiene, en cambio, una ventaja teórica: permitir un conjunto S₀ de estados iniciales hace que la construcción sea más corta (t₀ = S₀ sin casos aparte) y deja ver la simetría entre estados iniciales y finales que usan en el Teorema 12 para invertir autómatas. Para leer el artículo hay que acostumbrarse a «cinta» y «M», pero el contenido de las definiciones coincide con las del libro.
+
+### La mención del Premio Turing de 1976
+
+La página oficial de la ACM da la mención compartida de Rabin y Scott (1976). Reconoce el artículo conjunto porque «introduced the idea of nondeterministic machines», un concepto que, según la mención, ha resultado enormemente valioso, y añade que el artículo ha sido una fuente continua de inspiración para el trabajo posterior en este campo (ACM, s. f.).
+
+La distinción se justifica, por tanto, por una idea y no por un resultado concreto: el no determinismo. El Teorema 11 muestra que esa idea no aumenta el poder de reconocimiento, pero sí la comodidad y la concisión con que se describen los autómatas, como dicen los propios autores. La semblanza de la ACM da el contexto: Rabin y Scott se apartaron de los modelos inspirados en redes neuronales y trabajaron con máquinas de estados finitos, en particular con una máquina que no tiene una sola transición posible desde cada estado, sino varias. La idea se mostró útil mucho más allá de los autómatas finitos: la ACM destaca que sigue inspirando el estudio teórico de muchos problemas.
+
+## 4.3. Dos artículos localizados
 
 Ambos tienen DOI y se publicaron después de 2018. El primero describe una implementación evaluada con experimentos (el enunciado pide que al menos uno lo haga); el segundo es un estudio empírico.
 
@@ -133,6 +170,12 @@ La evaluación (Sec. 4.2) usa 1 000 conjunciones aleatorias de fórmulas LTLf y 
 
 ## Referencias
 
+ACM. (s. f.). *Michael O. Rabin*. A.M. Turing Award laureate. Recuperado el 4 de noviembre de 2026, de https://amturing.acm.org/award_winners/rabin_9681074.cfm
+
 Davis, J. C., Michael IV, L. G., Coghlan, C. A., Servant, F. y Lee, D. (2019). Why aren't regular expressions a lingua franca? An empirical study on the re-use and portability of regular expressions. En *Proceedings of the 2019 27th ACM Joint Meeting on European Software Engineering Conference and Symposium on the Foundations of Software Engineering* (pp. 443-454). ACM. https://doi.org/10.1145/3338906.3338909
+
+Hopcroft, J. E., Motwani, R. y Ullman, J. D. (2007). *Teoría de autómatas, lenguajes y computación* (3.ª ed.). Pearson Educación. ISBN: 978-84-7829-088-8.
+
+Rabin, M. O. y Scott, D. (1959). Finite automata and their decision problems. *IBM Journal of Research and Development, 3*(2), 114-125. https://doi.org/10.1147/rd.32.0114
 
 Zhu, S., Tabajara, L. M., Pu, G. y Vardi, M. Y. (2021). On the power of automata minimization in reactive synthesis. En P. Ganty y D. Bresolin (Eds.), *Proceedings of the 12th International Symposium on Games, Automata, Logics, and Formal Verification (GandALF 2021)* (EPTCS, Vol. 346, pp. 117-134). https://doi.org/10.4204/EPTCS.346.8
