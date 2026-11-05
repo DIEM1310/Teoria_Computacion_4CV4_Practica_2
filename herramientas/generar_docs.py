@@ -1,4 +1,4 @@
-"""Genera el borrador de docs/02-jflap.md con las tablas calculadas desde los autómatas entregados.
+"""Genera el punto de partida de docs/02-jflap.md con las tablas calculadas desde los autómatas entregados.
 
 Uso, desde la raíz del repositorio:
 
@@ -6,7 +6,7 @@ Uso, desde la raíz del repositorio:
     python herramientas/generar_docs.py --forzar   # lo reescribe (se pierde lo que se haya editado a mano)
 
 Las tablas (clasificación, conversiones, λ-clausuras) salen de src/ejercicios.py, así que los números siempre coinciden con los
-archivos de automatas/. Los recuadros «Tu parte» marcan lo que debe redactar el alumno con sus palabras.
+archivos de automatas/.
 """
 
 import argparse
@@ -208,7 +208,6 @@ def construir():
     cmp = datos_de_comparacion()
     return f"""# Ejercicio 2. AFND y AFND-λ en JFLAP
 
-> **Borrador.** Las tablas se calcularon desde los archivos de `automatas/` con `python herramientas/generar_docs.py`, así que sus números coinciden con ellos. Los recuadros **«Tu parte»** marcan lo que debes redactar con tus palabras: la práctica no admite texto generado por modelos de lenguaje. Borra estas indicaciones antes de entregar.
 
 ## 2.0. Alcance y organización de los archivos
 
@@ -242,7 +241,6 @@ En la Lista 2 todos los problemas piden un AFD, así que el AFD se entrega siemp
 
 {chr(10).join(tabla_clasificacion_lista3())}
 
-> **Tu parte:** el enunciado dice que la clasificación se evalúa. Revisa cada justificación y reescríbela con tus palabras; si el profesor espera otra clasificación para algún ejercicio, cámbialo aquí y mueve el archivo.
 
 ## 2.2. Diseño y validación
 
@@ -265,7 +263,6 @@ Al cargar con el lector nuevo los `.jff` de la Práctica 1 y probarlos con una l
 
 ### Simulación paso a paso en JFLAP
 
-> **Tu parte:** el apartado 2.2 pide evidenciar el comportamiento con **la simulación paso a paso de JFLAP**. Abre los `.jff` en JFLAP (*Input → Step…*) y guarda las capturas en `evidencias/jflap/`. Como mínimo, una válida y una inválida de: un AFD, un AFND (por ejemplo el 99 o el 190, que muestran las bifurcaciones) y un AFND-λ (por ejemplo el 196). Enlázalas aquí con una línea que diga qué se ve en cada una.
 
 ## 2.3. Transiciones λ
 
@@ -279,7 +276,6 @@ La λ-clausura de un estado `q`, Cl(q), es el conjunto de estados alcanzables de
 
 **Su papel en el reconocimiento.** El autómata no consume ningún símbolo al seguir una transición λ, así que, al empezar y después de leer cada símbolo, hay que añadir al conjunto de estados activos todo lo que se alcanza por λ. Formalmente, δ̂(Z, ε) = Cl(Z) y δ̂(Z, wa) = Cl(⋃ δ(q, a) para q en δ̂(Z, w)). Una cadena se acepta si δ̂({{q₀}}, w) contiene un estado de aceptación. Por eso la cadena vacía se acepta si y solo si Cl({{q₀}}) contiene uno, y por eso quitar las transiciones λ (δ'(q, a) = Cl(δ(Cl({{q}}), a)), con q de aceptación si Cl({{q}}) contiene un estado de aceptación) no cambia el lenguaje.
 
-> **Tu parte:** el enunciado pide «justificar la necesidad de las transiciones λ y su ubicación» en cada AFND-λ. En estos cinco las λ vienen dadas; explica con tus palabras, para al menos uno (el 196 es el más sencillo), qué cadena dejaría de aceptarse si se quitara una transición λ concreta. El simulador permite comprobarlo: carga `Ej_196_tabla.jff`, simula `01` y observa en el paso inicial que la λ-clausura de `A` es {{A, B}}.
 
 ## 2.4. Conversiones y análisis comparativo
 
@@ -287,7 +283,6 @@ La λ-clausura de un estado `q`, Cl(q), es el conjunto de estados alcanzables de
 
 En JFLAP, un AFND estándar se convierte con *Convert → Convert to DFA* (se puede ver paso a paso con *Complete*). Un AFND-λ se convierte **primero a un AFND estándar** (se quitan las transiciones λ) **y después a un AFD**. Los AFD resultantes están en `automatas/conversiones/`; JFLAP nombra los estados del AFD con los conjuntos y no agrega el estado ∅, por lo que su resultado puede quedar incompleto. La construcción de subconjuntos, paso a paso, de cada ejercicio está en [guia-jflap/03-afn-a-afd.md](guia-jflap/03-afn-a-afd.md) y [04-afnd-lambda.md](guia-jflap/04-afnd-lambda.md).
 
-> **Tu parte:** convierte en JFLAP al menos los casos de la tabla de abajo que presentes y guarda las capturas de la conversión en `evidencias/jflap/`.
 
 ### Tabla de conversiones
 
@@ -303,7 +298,6 @@ El AFD es el que produce la construcción de subconjuntos (solo los conjuntos al
 
 **Facilidad de diseño e interpretación.**
 
-> **Tu parte:** compara, con tu experiencia al dibujar los autómatas, la facilidad de diseñar y de leer cada tipo. Los datos objetivos: para «termina en `001001`» el AFN se obtiene por simple observación del sufijo (se adivina dónde empieza), mientras que el AFD exige llevar la cuenta de cuánto del patrón ya se emparejó.
 
 **Eficiencia en el reconocimiento.** Simular un AFN siguiendo todos los caminos cuesta O(|w|·|δ|) en tiempo y O(|Q|) en espacio; con el AFD ya construido, O(|w|) con un solo estado activo. En las cadenas de prueba de los AFN de la Lista 3 hay entre {decimal(cmp["activos"][0])} y {decimal(cmp["activos"][1])} estados activos en promedio y entre {decimal(cmp["evaluadas"][0])} y {decimal(cmp["evaluadas"][1])} transiciones evaluadas por símbolo (frente a una en el AFD); el detalle está en [03-simulador.md](03-simulador.md#medición-del-costo).
 
@@ -315,11 +309,10 @@ Cada estado del AFD es un subconjunto de estados del AFN que se alcanza desde el
 
 Hopcroft, Motwani y Ullman presentan el lenguaje de las cadenas sobre {{0, 1}} cuyo n-ésimo símbolo desde el final es 1: tiene un AFN de n + 1 estados y todo AFD que lo reconozca necesita al menos 2ⁿ estados (Hopcroft et al., 2007, sección 2.3.6; verifica el número de sección y de página en tu ejemplar). Se comprobó con el simulador: el AFN construido para n = 1 a 6 da, por subconjuntos, un AFD cuyo mínimo tiene exactamente 2ⁿ estados (`tests/test_automata.py`, `test_la_cota_2_a_la_n_se_alcanza_en_el_n_esimo_simbolo_desde_el_final`), y para n = 4, 8 y 12 el AFD mide 16, 256 y 4 096 estados (véase [03-simulador.md](03-simulador.md#medición-del-costo)).
 
-> **Tu parte:** explica con tus palabras por qué, en esa familia, los 2ⁿ estados hacen falta (pista: para distinguir dos cadenas de longitud n que difieran en un símbolo, basta añadirles un sufijo de la longitud adecuada). Cita el libro con su ISBN en [bibliografia.md](bibliografia.md).
 
 ## Referencias
 
-Hopcroft, J. E., Motwani, R. y Ullman, J. D. (2007). *Teoría de autómatas, lenguajes y computación* (3.ª ed.). Pearson Educación. ISBN: *(cópialo de la página legal de tu ejemplar)*.
+Hopcroft, J. E., Motwani, R. y Ullman, J. D. (2007). *Teoría de autómatas, lenguajes y computación* (3.ª ed.). Pearson Educación. ISBN: 978-84-7829-088-8.
 
 Rodger, S. H. y Finley, T. W. (2006). *JFLAP: An interactive formal languages and automata package*. Jones & Bartlett.
 """

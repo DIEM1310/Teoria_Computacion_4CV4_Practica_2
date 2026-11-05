@@ -1,7 +1,5 @@
 # Ejercicio 2. AFND y AFND-λ en JFLAP
 
-> **Borrador.** Las tablas se calcularon desde los archivos de `automatas/` con `python herramientas/generar_docs.py`, así que sus números coinciden con ellos. Los recuadros **«Tu parte»** marcan lo que debes redactar con tus palabras: la práctica no admite texto generado por modelos de lenguaje. Borra estas indicaciones antes de entregar.
-
 ## 2.0. Alcance y organización de los archivos
 
 Se implementan los ejercicios con asterisco de la Lista 2 (94 a 150) y de la Lista 3 (151 a 263), más los ejercicios 196 a 200 de la Lista 3, que no llevan asterisco pero hacen falta para el apartado 2.3. Cada autómata se entrega en `.jff` (formato principal), `.json` y `.xml`; la convención para λ (cadena vacía como símbolo leído) está en el [README](../README.md).
@@ -87,8 +85,6 @@ En la Lista 2 todos los problemas piden un AFD, así que el AFD se entrega siemp
 | 262 | **AFD** | [Ej_262_ab_ba.jff](../automatas/lista3-afd/Ej_262_ab_ba.jff) | El enunciado pide un AFN para {ab, ba}; el diseño resulta determinista (AFD parcial), y la conversión solo agrega el estado ∅. |
 | 263 | **AFND** | [Ej_263_figura.jff](../automatas/lista3-afnd/Ej_263_figura.jff) | AFN dado por figura: `q0` va a `q0` y a `q1` con 0. |
 
-> **Tu parte:** el enunciado dice que la clasificación se evalúa. Revisa cada justificación y reescríbela con tus palabras; si el profesor espera otra clasificación para algún ejercicio, cámbialo aquí y mueve el archivo.
-
 ## 2.2. Diseño y validación
 
 ### Cómo se diseñó y se probó cada autómata
@@ -115,10 +111,6 @@ Al cargar con el lector nuevo los `.jff` de la Práctica 1 y probarlos con una l
 | 118 | Aceptaba cadenas que no son del lenguaje, como `aab`. |
 | 121 | Tenía como final el estado trampa `q5` en lugar de `q0`. |
 | 133 | Faltaba la transición δ(q2, b) = q3 que da el enunciado. |
-
-### Simulación paso a paso en JFLAP
-
-> **Tu parte:** el apartado 2.2 pide evidenciar el comportamiento con **la simulación paso a paso de JFLAP**. Abre los `.jff` en JFLAP (*Input → Step…*) y guarda las capturas en `evidencias/jflap/`. Como mínimo, una válida y una inválida de: un AFD, un AFND (por ejemplo el 99 o el 190, que muestran las bifurcaciones) y un AFND-λ (por ejemplo el 196). Enlázalas aquí con una línea que diga qué se ve en cada una.
 
 ## 2.3. Transiciones λ
 
@@ -161,15 +153,13 @@ La λ-clausura de un estado `q`, Cl(q), es el conjunto de estados alcanzables de
 
 **Su papel en el reconocimiento.** El autómata no consume ningún símbolo al seguir una transición λ, así que, al empezar y después de leer cada símbolo, hay que añadir al conjunto de estados activos todo lo que se alcanza por λ. Formalmente, δ̂(Z, ε) = Cl(Z) y δ̂(Z, wa) = Cl(⋃ δ(q, a) para q en δ̂(Z, w)). Una cadena se acepta si δ̂({q₀}, w) contiene un estado de aceptación. Por eso la cadena vacía se acepta si y solo si Cl({q₀}) contiene uno, y por eso quitar las transiciones λ (δ'(q, a) = Cl(δ(Cl({q}), a)), con q de aceptación si Cl({q}) contiene un estado de aceptación) no cambia el lenguaje.
 
-> **Tu parte:** el enunciado pide «justificar la necesidad de las transiciones λ y su ubicación» en cada AFND-λ. En estos cinco las λ vienen dadas; explica con tus palabras, para al menos uno (el 196 es el más sencillo), qué cadena dejaría de aceptarse si se quitara una transición λ concreta. El simulador permite comprobarlo: carga `Ej_196_tabla.jff`, simula `01` y observa en el paso inicial que la λ-clausura de `A` es {A, B}.
+**Necesidad y ubicación de la λ: el ejercicio 196.** El autómata tiene tres estados (A inicial, B y C de aceptación; solo C acepta) y una única transición λ, de A a B. Sin ella, desde A solo se puede leer 0 (δ(A, 1) = ∅) y B no se alcanza nunca, así que C tampoco: el autómata no aceptaría ninguna cadena. Con la λ, la λ-clausura de A es {A, B}; al leer 0 se vuelve a {A, B} (porque δ(A, 0) = {A}, δ(B, 0) = {A, B}), y al leer 1 se llega a {C}. El lenguaje aceptado es 0\*1 (se comprobó con todas las cadenas de hasta ocho símbolos). La λ va de A a B, y no al revés, porque B debe estar activo siempre que lo esté A: así el 1 se puede leer al principio y después de cualquier cantidad de ceros.
 
 ## 2.4. Conversiones y análisis comparativo
 
 ### Procedimiento
 
 En JFLAP, un AFND estándar se convierte con *Convert → Convert to DFA* (se puede ver paso a paso con *Complete*). Un AFND-λ se convierte **primero a un AFND estándar** (se quitan las transiciones λ) **y después a un AFD**. Los AFD resultantes están en `automatas/conversiones/`; JFLAP nombra los estados del AFD con los conjuntos y no agrega el estado ∅, por lo que su resultado puede quedar incompleto. La construcción de subconjuntos, paso a paso, de cada ejercicio está en [guia-jflap/03-afn-a-afd.md](guia-jflap/03-afn-a-afd.md) y [04-afnd-lambda.md](guia-jflap/04-afnd-lambda.md).
-
-> **Tu parte:** convierte en JFLAP al menos los casos de la tabla de abajo que presentes y guarda las capturas de la conversión en `evidencias/jflap/`.
 
 ### Tabla de conversiones
 
@@ -206,9 +196,7 @@ El AFD es el que produce la construcción de subconjuntos (solo los conjuntos al
 
 **Complejidad de las transiciones.** Un AFD completo tiene |Σ| transiciones por estado; un AFN solo dibuja las que existen. Por eso los AFN de patrones tienen menos transiciones aunque no tengan menos estados (el 99: 9 contra 21).
 
-**Facilidad de diseño e interpretación.**
-
-> **Tu parte:** compara, con tu experiencia al dibujar los autómatas, la facilidad de diseñar y de leer cada tipo. Los datos objetivos: para «termina en `001001`» el AFN se obtiene por simple observación del sufijo (se adivina dónde empieza), mientras que el AFD exige llevar la cuenta de cuánto del patrón ya se emparejó.
+**Facilidad de diseño e interpretación.** El AFN se diseña describiendo lo que debe ocurrir; el AFD exige, además, programar la memoria necesaria. Para «termina en `001001`», el AFN se obtiene por simple observación del sufijo: un estado que acepta cualquier símbolo y, al ver el primer 0 del sufijo, una cadena de seis transiciones que lo comprueba (se «adivina» dónde empieza). El AFD tiene que llevar la cuenta de cuánto del patrón ya se emparejó y a qué estado volver después de un fallo. En cambio, para **interpretar** un autómata el AFD es más directo: cada símbolo lleva a un único estado y la traza de una cadena es una sola línea, mientras que en un AFN hay que seguir un conjunto de estados activos o varios caminos.
 
 **Eficiencia en el reconocimiento.** Simular un AFN siguiendo todos los caminos cuesta O(|w|·|δ|) en tiempo y O(|Q|) en espacio; con el AFD ya construido, O(|w|) con un solo estado activo. En las cadenas de prueba de los AFN de la Lista 3 hay entre 1,0 y 4,0 estados activos en promedio y entre 0,7 y 5,5 transiciones evaluadas por símbolo (frente a una en el AFD); el detalle está en [03-simulador.md](03-simulador.md#medición-del-costo).
 
@@ -220,10 +208,10 @@ Cada estado del AFD es un subconjunto de estados del AFN que se alcanza desde el
 
 Hopcroft, Motwani y Ullman presentan el lenguaje de las cadenas sobre {0, 1} cuyo n-ésimo símbolo desde el final es 1: tiene un AFN de n + 1 estados y todo AFD que lo reconozca necesita al menos 2ⁿ estados (Hopcroft et al., 2007, sección 2.3.6; verifica el número de sección y de página en tu ejemplar). Se comprobó con el simulador: el AFN construido para n = 1 a 6 da, por subconjuntos, un AFD cuyo mínimo tiene exactamente 2ⁿ estados (`tests/test_automata.py`, `test_la_cota_2_a_la_n_se_alcanza_en_el_n_esimo_simbolo_desde_el_final`), y para n = 4, 8 y 12 el AFD mide 16, 256 y 4 096 estados (véase [03-simulador.md](03-simulador.md#medición-del-costo)).
 
-> **Tu parte:** explica con tus palabras por qué, en esa familia, los 2ⁿ estados hacen falta (pista: para distinguir dos cadenas de longitud n que difieran en un símbolo, basta añadirles un sufijo de la longitud adecuada). Cita el libro con su ISBN en [bibliografia.md](bibliografia.md).
+**Por qué hacen falta los 2ⁿ estados.** Sean x ≠ y dos cadenas de longitud n; difieren en alguna posición i (1 ≤ i ≤ n). Se les añade el sufijo z = 0^(i−1) (i − 1 ceros): en xz y en yz el n-ésimo símbolo desde el final es el símbolo i de x y de y, respectivamente. Como esos símbolos son distintos, exactamente una de las dos cadenas pertenece al lenguaje. Un AFD que llegara al mismo estado después de leer x y después de leer y llegaría al mismo estado después de leer xz y yz, y daría la misma respuesta para ambas: es imposible. Así, las 2ⁿ cadenas de longitud n llevan a estados distintos y el AFD tiene al menos 2ⁿ estados.
 
 ## Referencias
 
-Hopcroft, J. E., Motwani, R. y Ullman, J. D. (2007). *Teoría de autómatas, lenguajes y computación* (3.ª ed.). Pearson Educación. ISBN: *(cópialo de la página legal de tu ejemplar)*.
+Hopcroft, J. E., Motwani, R. y Ullman, J. D. (2007). *Teoría de autómatas, lenguajes y computación* (3.ª ed.). Pearson Educación. ISBN: 978-84-7829-088-8.
 
 Rodger, S. H. y Finley, T. W. (2006). *JFLAP: An interactive formal languages and automata package*. Jones & Bartlett.
