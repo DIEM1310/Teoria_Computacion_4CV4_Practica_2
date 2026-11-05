@@ -12,7 +12,11 @@ Chacon, S. y Straub, B. (2014). *Pro Git* (2.ª ed.). Apress. ISBN: *(agrégalo;
 
 ## Artículos
 
+Davis, J. C., Michael IV, L. G., Coghlan, C. A., Servant, F. y Lee, D. (2019). Why aren't regular expressions a lingua franca? An empirical study on the re-use and portability of regular expressions. En *Proceedings of the 2019 27th ACM Joint Meeting on European Software Engineering Conference and Symposium on the Foundations of Software Engineering* (pp. 443-454). ACM. https://doi.org/10.1145/3338906.3338909
+
 Rabin, M. O. y Scott, D. (1959). Finite automata and their decision problems. *IBM Journal of Research and Development, 3*(2), 114-125. https://doi.org/10.1147/rd.32.0114
+
+Zhu, S., Tabajara, L. M., Pu, G. y Vardi, M. Y. (2021). On the power of automata minimization in reactive synthesis. En P. Ganty y D. Bresolin (Eds.), *Proceedings of the 12th International Symposium on Games, Automata, Logics, and Formal Verification (GandALF 2021)* (EPTCS, Vol. 346, pp. 117-134). https://doi.org/10.4204/EPTCS.346.8
 
 > **Tu parte (Ejercicio 4):** agrega aquí los **dos artículos con DOI que localices tú** (revistas o congresos con revisión por pares, de preferencia de 2018 en adelante, distintos de los cinco de la Práctica 1 y de los revisados en clase; al menos uno debe describir una implementación medida). Si vuelves a citar los de la Práctica 1, ten en cuenta que Gribkoff (2013) es un documento de curso y McCandless (2010) una entrada de blog: **no cumplen las fuentes admitidas de esta práctica**; si los usas en el Ejercicio 5, sustitúyelos o justifica su uso con el profesor.
 
