@@ -136,19 +136,23 @@ Los autómatas se abrieron en JFLAP y se probaron con *Input → Step…*. JFLAP
 
 *Figura 4. Con `00100` todas las ramas quedan en rojo (q2, q0, q5 y q1): ninguna llega a q6 y la cadena se rechaza.*
 
+![JFLAP: Multiple Run del AFND del 99 con diez cadenas](../evidencias/jflap/afnd_099_multiple_run.png)
+
+*Figura 5. «Input → Multiple Run» sobre el AFND del 99 (termina en `001001`): cinco cadenas válidas (`001001`, `1001001`, `0001001`, `2001001` y `001001001`), todas en «Accept», y cinco inválidas (`00100`, `001000`, `0010011`, `001002` y `0010010010`), todas en «Reject». La última contiene `001001`, pero no termina en él.*
+
 **AFND-λ: ejercicio 196.**
 
 ![JFLAP: configuraciones iniciales del 196 con 01](../evidencias/jflap/afnd_lambda_196_clausura.png)
 
-*Figura 5. Paso inicial con `01`: JFLAP crea dos configuraciones, en A y en B, porque la λ-clausura de A es {A, B}.*
+*Figura 6. Paso inicial con `01`: JFLAP crea dos configuraciones, en A y en B, porque la λ-clausura de A es {A, B}.*
 
 ![JFLAP: el AFND-λ del 196 acepta 01](../evidencias/jflap/afnd_lambda_196_valida.png)
 
-*Figura 6. Al terminar `01` hay configuraciones en C, que es de aceptación: se acepta.*
+*Figura 7. Al terminar `01` hay configuraciones en C, que es de aceptación: se acepta.*
 
 ![JFLAP: el AFND-λ del 196 rechaza 10](../evidencias/jflap/afnd_lambda_196_invalida.png)
 
-*Figura 7. Con `10` la única rama llega a C leyendo el 1, pero C no tiene transición con 0: se rechaza.*
+*Figura 8. Con `10` la única rama llega a C leyendo el 1, pero C no tiene transición con 0: se rechaza.*
 
 ## 2.3. Transiciones λ
 
@@ -201,7 +205,7 @@ En JFLAP, un AFND estándar se convierte con *Convert → Convert to DFA* (se pu
 
 ![AFD que produce JFLAP para el ejercicio 189](../evidencias/jflap/conversion_189.png)
 
-*Figura 8. AFD que produce JFLAP con *Convert → Convert to DFA* para el ejercicio 189 (contiene 00101 o 00110): 24 estados, cada uno etiquetado con el subconjunto de estados del AFN que representa. El inicial es {q0} y son de aceptación los subconjuntos que contienen q5 o q7. Coincide con los 24 estados de la tabla siguiente.*
+*Figura 9. AFD que produce JFLAP con «Convert → Convert to DFA» para el ejercicio 189 (contiene 00101 o 00110): 24 estados, cada uno etiquetado con el subconjunto de estados del AFN que representa. El inicial es {q0} y son de aceptación los subconjuntos que contienen q5 o q7. Coincide con los 24 estados de la tabla siguiente.*
 
 ### Tabla de conversiones
 

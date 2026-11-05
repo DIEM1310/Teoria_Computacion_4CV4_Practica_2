@@ -84,7 +84,7 @@ Las dos ampliaciones son **decisiones de diseño propias**: el texto de Gribkoff
 
 ![El autómata de Pac-Man en JFLAP, con Multiple Run](../evidencias/jflap/pacman_multiple_run.png)
 
-*Figura 1. `Pacman_fantasma.jff` abierto en JFLAP, con *Input → Multiple Run*: `vpv` y `cmbrv` se aceptan y `cmv` se rechaza, como en los casos 4, 10 y 11 de la tabla siguiente.*
+*Figura 1. `Pacman_fantasma.jff` abierto en JFLAP, con «Input → Multiple Run»: `vpv` y `cmbrv` se aceptan y `cmv` se rechaza, como en los casos 4, 10 y 11 de la tabla siguiente.*
 
 ![El autómata de Pac-Man en el simulador, con la cadena cmbrv](../evidencias/app/08_pacman_cmbrv.png)
 
