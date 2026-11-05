@@ -18,6 +18,8 @@ Zhu, S., Tabajara, L. M., Pu, G. y Vardi, M. Y. (2021). On the power of automata
 
 ## Documentación oficial
 
+ACM. (s. f.). *Michael O. Rabin*. A.M. Turing Award laureate. Recuperado el 4 de noviembre de 2026, de https://amturing.acm.org/award_winners/rabin_9681074.cfm
+
 Appveyor Systems Inc. (2026). *flet* (Versión 0.86.5) [Paquete de Python]. Python Package Index. Recuperado el 5 de octubre de 2026, de https://pypi.org/project/flet/0.86.5/
 
 Docker, Inc. (s. f.-a). *Define services in Docker Compose*. Docker Docs. Recuperado el 5 de octubre de 2026, de https://docs.docker.com/reference/compose-file/services/
