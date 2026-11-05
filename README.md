@@ -25,7 +25,6 @@ Profundizar en los autómatas finitos no deterministas y sus conversiones median
 | 3. Simulador de autómatas con interfaz gráfica | [docs/03-simulador.md](docs/03-simulador.md) |
 | 4. Investigación y estado del arte | [docs/04-investigacion.md](docs/04-investigacion.md) |
 | 5. Del artículo al autómata | [docs/05-del-articulo-al-automata.md](docs/05-del-articulo-al-automata.md) |
-| Propuesta de trabajo | [docs/propuesta.md](docs/propuesta.md) |
 | Bibliografía | [docs/bibliografia.md](docs/bibliografia.md) |
 
 Los autómatas están en [automatas/](automatas/), organizados en `lista2-afd/`, `lista3-afd/`, `lista3-afnd/`, `lista3-afnd-lambda/`, `conversiones/` y `aplicacion/`. Cada uno se entrega en `.jff` (formato principal) y también en `.json` y `.xml`. Las capturas están en [evidencias/](evidencias/).
