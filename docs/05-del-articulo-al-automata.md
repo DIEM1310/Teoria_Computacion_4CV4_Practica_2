@@ -1,7 +1,5 @@
 # 5. Del artículo al autómata: el fantasma de Pac-Man
 
-> **Borrador.** Los recuadros **«Tu parte»** y **«Para verificar»** marcan lo que debes leer, decidir o comprobar tú antes de entregar. Bórralos al terminar.
-
 ## 5.1 Aplicación elegida y fuente
 
 La aplicación es el **comportamiento de un fantasma de Pac-Man**, que Gribkoff (2013, sección 4 y Figura 3) presenta como un AFD de cuatro estados. El enunciado propone esta fuente para el Ejercicio 5. Es un documento de curso y no un artículo con DOI, así que no sirve como fuente de la investigación del Ejercicio 4; aquí se usa solo porque el enunciado lo pide.
@@ -18,7 +16,7 @@ Lo que dice la fuente: el fantasma tiene cuatro comportamientos, que corresponde
 | Flee Pac-Man | Eaten by Pac-Man | Return to Base |
 | Return to Base | Reach Central Base | Wander the Maze |
 
-> **Para verificar:** las dos flechas curvas entre «Wander the Maze» y «Flee Pac-Man» se distinguen por la punta; la tabla las lee así: la que termina en «Flee» es «Pac-Man Eats Power Pellet» y la que termina en «Wander» es «Power Pellet Expires», que además es lo que dice el sentido del juego. Abre la página 6 del PDF y confírmalo.
+En la figura, las dos flechas curvas entre «Wander the Maze» y «Flee Pac-Man» se distinguen por la punta: la que termina en «Flee» es «Pac-Man Eats Power Pellet» y la que termina en «Wander» es «Power Pellet Expires».
 
 ## 5.2 El modelo: un AFD
 
@@ -67,8 +65,6 @@ Tabla de transiciones (solo cambian de estado las celdas marcadas con →; las d
 
 **Por qué F = {q1}.** La figura de Gribkoff no marca estados de aceptación, y un AFD los necesita. Se eligió «el fantasma persigue a Pac-Man» porque da una pregunta con sentido: *¿esta secuencia de eventos deja a Pac-Man siendo perseguido?* El lenguaje aceptado es el de las secuencias de eventos que terminan en q1. Es una decisión de modelado, no algo que diga la fuente.
 
-> **Tu parte:** confirma que estás de acuerdo con F = {q1}. Si prefieres otro estado de aceptación (por ejemplo, q2 y q4: «el fantasma es vulnerable»), solo cambia `ACEPTACION` en `herramientas/generar_aplicacion.py` y los resultados esperados de `tests/test_aplicacion.py`.
-
 ## 5.3 Ampliación: dos estados y dos eventos nuevos
 
 El enunciado pide ampliar el modelo con **al menos dos estados y dos eventos nuevos** y justificarlo. Las dos ampliaciones **parten en dos pasos una flecha de la figura**:
@@ -78,7 +74,7 @@ El enunciado pide ampliar el modelo con **al menos dos estados y dos eventos nue
 
 Con esto el autómata pasa de 4 a 6 estados y de 6 a 8 eventos. Siguen siendo estados que se pueden alcanzar y distinguir: el simulador lo confirma (6 accesibles, 6 tras minimizar).
 
-> **Para verificar:** las dos ampliaciones son **decisiones de diseño propias**, apoyadas en el texto de Gribkoff solo en lo de la regeneración. No se afirma que coincidan con el Pac-Man original; no se usó ninguna fuente sobre las reglas del juego. Si quieres respaldar el estado Parpadear con una fuente, tendría que ser una admitida (libro con ISBN o artículo con DOI); mientras no la haya, preséntalo como una ampliación propuesta.
+Las dos ampliaciones son **decisiones de diseño propias**: el texto de Gribkoff apoya solo la regeneración. No se afirma que coincidan con las reglas del Pac-Man original, porque no se usó ninguna fuente sobre ellas; Parpadear es una ampliación propuesta.
 
 ## 5.4 Archivos y verificación en el simulador
 
@@ -107,11 +103,7 @@ El resultado **esperado** se razonó a mano con la figura y la ampliación, ante
 | 13 | `cacm` | Regresar (q3) | Rechaza | Regresar (q3) | Rechaza | otra pastilla en la alerta reinicia la huida; luego lo comen |
 | 14 | `vcaev` | Perseguir (q1) | Acepta | Perseguir (q1) | Acepta | persigue, huye, alerta, expira y vuelve a perseguir |
 
-> **Tu parte:** carga el `.jff` en tu simulador y en **JFLAP**, prueba al menos tres de estas cadenas en cada uno y guarda las capturas en `evidencias/app/` y `evidencias/jflap/`.
-
 ## 5.5 Abstracción: qué captura el modelo y qué deja fuera
-
-> **Borrador mío, para que lo leas, lo corrijas y lo hagas tuyo.** Es la parte central del ejercicio; el profesor va a preguntar por ella.
 
 Un autómata finito modela **el modo de comportamiento** del fantasma y **cómo reacciona a eventos discretos**, y nada más. Lo que captura es un hecho sencillo pero útil: en cada momento el fantasma está en uno de unos pocos modos (vagar, perseguir, huir, regresar, parpadear, regenerar), y lo que hace ante un evento depende **solo del modo actual**, no de cómo llegó a él. Eso permite contestar preguntas sobre secuencias de eventos: por ejemplo, que un fantasma recién devorado nunca persigue, o que de cualquier modo se puede volver a vagar (ningún estado es una trampa).
 
@@ -125,10 +117,6 @@ Lo que deja fuera es casi todo el juego:
 
 Hay además un límite de fondo: un autómata finito **solo tiene memoria finita**, que es su estado. Cualquier comportamiento que exija contar sin cota (cuántos eventos de cierto tipo han ocurrido) no cabe en un número fijo de estados; para eso haría falta otro modelo. Y, como la figura no define todas las flechas, completar el AFD con lazos fue una decisión de modelado: se asumió que un evento irrelevante para el modo actual no cambia nada, lo cual es razonable, pero es una suposición mía y no una afirmación de la fuente.
 
-> **Tu parte:** léela con la Figura 3 delante, quita o corrige lo que no puedas defender con tus propias palabras y ajústala a media cuartilla. Una pregunta probable: *¿por qué un AFD y no un AFND?* (porque en cada estado cada evento tiene un único efecto; el no determinismo no aporta nada aquí).
-
 ## Referencias
 
 Gribkoff, E. (2013). *Applications of deterministic finite automata* [Documento de curso, ECS 120]. University of California, Davis. https://www.cs.ucdavis.edu/~rogaway/classes/120/spring13/eric-dfa.pdf
-
-> **Tu parte:** agrega la fecha de acceso a esta referencia y recuerda que no es una fuente de las admitidas para la investigación (Ejercicio 4); aquí aparece solo porque el Ejercicio 5 la propone.
